@@ -19,21 +19,22 @@ object SbtCollectDependencies extends AutoPlugin {
 
   object autoImport {
     val collectDependencies = taskKey[Unit]("collect dependencies")
-    val jarDir = settingKey[String]("destination jar directory")
+    val jarDir = settingKey[Path]("destination jar directory")
+    val targetDir = settingKey[Path]("project target directory")
   }
 
   import autoImport.*
 
   private val defaultSettings: Seq[Def.Setting[?]] = Seq(
-    jarDir := "jar",
+    jarDir := Paths.get("jar"),
+    targetDir := Paths.get("target", "scala-2.12"),
 
     collectDependencies := {
-      val jarPath = Paths.get(jarDir.value)
-      if (!Files.exists(jarPath)) Files.createDirectories(jarPath)
+      if (!Files.exists(jarDir.value)) Files.createDirectories(jarDir.value)
 
       val cp: Seq[File] = (Runtime / fullClasspath).value.files
-      collectJars(cp.map(x => x.toPath), jarPath)
-      collectJars(Files.walk(Paths.get("target", "scala-2.12"), 1).iterator().asScala.toList, jarPath)
+      collectJars(cp.map(x => x.toPath), jarDir.value)
+      collectJars(Files.walk(targetDir.value, 1).iterator().asScala.toList, jarDir.value)
     }
   )
 
