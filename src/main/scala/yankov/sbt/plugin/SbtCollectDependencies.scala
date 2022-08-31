@@ -40,6 +40,4 @@ object SbtCollectDependencies extends AutoPlugin {
   override def trigger = allRequirements
 
   override lazy val projectSettings: Seq[Def.Setting[?]] = defaultSettings
-
-  override lazy val buildSettings: Seq[Def.Setting[?]] = defaultSettings
 }
