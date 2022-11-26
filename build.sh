@@ -1,1 +1,1 @@
-sbt clean compile test package
+sbt clean compile test package publishLocal
